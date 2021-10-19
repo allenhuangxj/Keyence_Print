@@ -1,0 +1,11 @@
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\bin\Debug\LS_LASER.exe.config
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\bin\Debug\LS_LASER.exe
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\bin\Debug\LS_LASER.pdb
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\obj\x86\Debug\SLXW.FormMain.resources
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\obj\x86\Debug\SLXW.FormPWD.resources
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\obj\x86\Debug\SLXW.FormRePrint.resources
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\obj\x86\Debug\SLXW.Properties.Resources.resources
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\obj\x86\Debug\SLXW.csproj.GenerateResource.cache
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\obj\x86\Debug\SLXW.csproj.CoreCompileInputs.cache
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\obj\x86\Debug\LS_LASER.exe
+E:\Code\ThirdCode\other\余彪\基恩士扫码枪打印程序\TestCode-main\LS_PRINTER\SLXW\obj\x86\Debug\LS_LASER.pdb
