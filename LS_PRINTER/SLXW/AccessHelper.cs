@@ -238,7 +238,7 @@ namespace SYS_DB
                     DataGridView.DataSource = dt;
                 }));
             }
-            catch(Exception )
+            catch(Exception ex)
             {
 
             }

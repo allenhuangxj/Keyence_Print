@@ -27,7 +27,7 @@ namespace SLXW
         public static Mutex m_mutex = new Mutex(false, "328624A9-1CBB-4901-82D2-E10BD9EF0F0B");
         private Communication_TcpServer m_Server = null;
         private Print m_Print = new Print();
-        private bool m_bMarkNow = true;
+        private bool m_bHandPrint = false;
         public FormMain()
         {
             InitializeComponent();
@@ -36,12 +36,8 @@ namespace SLXW
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            numericUpDown_count.Value = Convert.ToDecimal(Configure.ReadConfig("SET", "COUNT", 1));
-
-            textBox_Name.Text = Configure.ReadConfig("SET", "NAME", "SN");
             textBox_Total.Text = Configure.ReadConfig("SET", "TOTAL", "0");
-            textBox_model_grf.Text = Configure.ReadConfig("SET", "MODEL_GRF", "");
-            m_bMarkNow = checkBox_MarkNow.Checked = Convert.ToBoolean(Configure.ReadConfig("SET", "MarkNow", "True"));
+            textBox_input.Enabled = false;
 
             if (!AccessHelper.CompactAccessDB())
             {
@@ -60,11 +56,7 @@ namespace SLXW
         }
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Configure.WriteConfig("SET", "COUNT", numericUpDown_count.Value.ToString());
-            Configure.WriteConfig("SET", "NAME", textBox_Name.Text);
             Configure.WriteConfig("SET", "TOTAL", textBox_Total.Text);
-            Configure.WriteConfig("SET", "MODEL_GRF", textBox_model_grf.Text);
-            Configure.WriteConfig("SET", "MarkNow", checkBox_MarkNow.Checked == true ? "True" : "False");
         }
 
         private void m_Server_acceptClientEvent(TcpClient client)
@@ -89,21 +81,8 @@ namespace SLXW
                 m_mutex.WaitOne();
                 string strRecive = strReciveString.Substring(0, strReciveString.Length - 1);
                 Log_RichTextBoxEx.WriteMessage("截取后最终的打印数据为:" + strRecive);
-
-                this.Invoke((EventHandler)(delegate
-                {
-                    textBox_input.Text = strRecive;
-                }));
-
-                if (m_bMarkNow)
-                {
-                    Log_RichTextBoxEx.WriteMessage("接收条码数据立刻打印");
-                    PrintData(strRecive);
-                }
-                else
-                {
-                    Log_RichTextBoxEx.WriteMessage("请手动触发打标");
-                }
+                Log_RichTextBoxEx.WriteMessage("接收条码数据触发打印");
+                PrintData(strRecive);
             }
             catch (Exception ex)
             {
@@ -118,23 +97,34 @@ namespace SLXW
 
         private void PrintData(string strData)
         {
+            string strDir = Configure.ReadConfig("SET", "MODEL_GRF", "");
+            int nLoops = Configure.ReadConfig("SET", "COUNT", 1);
+            string strName1 = Configure.ReadConfig("SET", "NAME1", "SN");
+            string strName2 = Configure.ReadConfig("SET", "NAME2", "BR");
+            bool bPrint = Convert.ToBoolean(Configure.ReadConfig("SET", "MarkNow", "True"));
+            Log_RichTextBoxEx.WriteMessage("条码内容：" + strData);
+            //界面显示
+            this.Invoke((EventHandler)(delegate
+            {
+                label_TXT.Text = strData;
+            }));
+
+            if (!bPrint)
+            {
+                Log_RichTextBoxEx.WriteMessage("不执行打印流程,退出流程");
+                return;
+            }
+
             Log_RichTextBoxEx.WriteMessage("开始执行打印流程");
+            if (string.IsNullOrEmpty(strDir) || nLoops <= 0)
+            {
+                Log_RichTextBoxEx.WriteMessage("请先设置打印机相关配置信息", true);
+                return;
+            }
 
             try
             {
-                string strDir = "";
-                int nLoops = 1;
-                int nCurCount = 0;
-                string strName = "SN";
-                this.Invoke((EventHandler)(delegate
-                {
-                    strDir = textBox_model_grf.Text + "\\";
-                    nLoops = Convert.ToInt32(numericUpDown_count.Value);
-                    nCurCount = Convert.ToInt32(textBox_Total.Text);
-                    strName = textBox_Name.Text;
-                }));
                 string strPrintName = strDir + strData.Length.ToString() + ".grf";
-
                 if (!File.Exists(strPrintName))
                 {
                     Log_RichTextBoxEx.WriteMessage("打印文件不存在:" + strPrintName, true);
@@ -148,41 +138,45 @@ namespace SLXW
                 }
                 Log_RichTextBoxEx.WriteMessage("加载打印模板成功");
 
-                int nResult = IsExist(strData);
-                if (nResult == -1)
-                    return;
-                else if (nResult == 1)
+                if (!m_bHandPrint)
                 {
-                    if (MessageBox.Show("重复数据:" + strData + ",是否继续打印?", "检测到重码", MessageBoxButtons.OKCancel, MessageBoxIcon.Error) != DialogResult.OK)
-                    {
-                        Log_RichTextBoxEx.WriteMessage("取消本次重复打印");
+                    Log_RichTextBoxEx.WriteMessage("自动模式检测防重");
+                    int nResult = IsExist(strData);
+                    if (nResult == -1)
                         return;
+                    else if (nResult == 1)
+                    {
+                        if (MessageBox.Show("重复数据:" + strData + ",是否继续打印?", "检测到重码", MessageBoxButtons.OKCancel, MessageBoxIcon.Error) != DialogResult.OK)
+                        {
+                            Log_RichTextBoxEx.WriteMessage("取消本次重复打印");
+                            return;
+                        }
                     }
                 }
-                Log_RichTextBoxEx.WriteMessage("条码内容：" + strData);
-                //界面显示
-                this.Invoke((EventHandler)(delegate
+                else
                 {
-                    label_TXT.Text = strData;
-                }));
+                    Log_RichTextBoxEx.WriteMessage("补码模式不检测防重");
+                }
 
-                if (!m_Print.ChangeTextByName(strName, strData))
+                if (!m_Print.ChangeTextByName(strName1, strData))
                 {
                     Log_RichTextBoxEx.WriteMessage("打印模板替换内容失败", true);
                     return;
                 }
-                Log_RichTextBoxEx.WriteMessage(string.Format("替换对象:{0}, 替换内容:{1}", strName, strData));
+                if (!m_Print.ChangeTextByName(strName2, strData))
+                {
+                    Log_RichTextBoxEx.WriteMessage("打印模板替换内容失败", true);
+                    return;
+                }
+                Log_RichTextBoxEx.WriteMessage(string.Format("替换对象:{0}, 替换内容:{1}", strName1, strData));
+                Log_RichTextBoxEx.WriteMessage(string.Format("替换对象:{0}, 替换内容:{1}", strName2, strData));
 
                 for (int i = 0; i < nLoops; i++)
                 {
                     m_Print.PrintDoc(false);
                 }
 
-                this.Invoke((EventHandler)(delegate
-                {
-                    textBox_Total.Text = (nCurCount + 1).ToString();
-                    Configure.WriteConfig("SET", "TOTAL", textBox_Total.Text);
-                }));
+                AddCount(nLoops);
 
                 if (!SaveData(strData))
                 {
@@ -200,10 +194,24 @@ namespace SLXW
             {
                 this.Invoke((EventHandler)(delegate
                 {
+                    m_bHandPrint = false;
                     textBox_input.Text = "";
                     textBox_input.Focus();
+                    textBox_input.Enabled = false;
                 }));
             }
+        }
+
+        private void AddCount(int nAdd)
+        {
+            int nCurCount = 0;
+            this.Invoke((EventHandler)(delegate
+            {
+                nCurCount = Convert.ToInt32(textBox_Total.Text);
+                nCurCount += nAdd;
+                textBox_Total.Text = nCurCount.ToString();
+                Configure.WriteConfig("SET", "TOTAL", textBox_Total.Text);
+            }));
         }
         private bool SaveData(string strBarcode)
         {
@@ -228,43 +236,11 @@ namespace SLXW
             textBox_input.Focus();
         }
 
-        private void button_grf_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.Description = "请选择文件路径";
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                textBox_model_grf.Text = dialog.SelectedPath;
-            }
-        }
-
-        private void button_start_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(textBox_input.Text))
-            {
-                Log_RichTextBoxEx.WriteMessage("条码信息不能为空", true);
-                return;
-            }
-
-            PrintData(textBox_input.Text);
-        }
-
-        private void checkBox_MarkNow_CheckedChanged(object sender, EventArgs e)
-        {
-            m_bMarkNow = checkBox_MarkNow.Checked;
-        }
-
         private void btn_clear_Click(object sender, EventArgs e)
         {
-            FormPWD pwd = new FormPWD();
-            if (pwd.ShowDialog() == DialogResult.OK)
-            {
-                textBox_Total.Text = "0";
-            }
-
             this.Invoke((EventHandler)(delegate
             {
+                textBox_Total.Text = "0";
                 textBox_input.Text = "";
                 textBox_input.Focus();
             }));
@@ -276,8 +252,47 @@ namespace SLXW
             {
                 if (!string.IsNullOrEmpty(textBox_input.Text))
                 {
-                    Log_RichTextBoxEx.WriteMessage("回车响应打印");
+                    Log_RichTextBoxEx.WriteMessage("回车响应补码打印");
+                    m_bHandPrint = true;
                     PrintData(textBox_input.Text);
+                }
+            }
+        }
+
+        private void btn_Setting_Click(object sender, EventArgs e)
+        {
+            FormPWD pwd = new FormPWD();
+            if (pwd.ShowDialog() == DialogResult.OK)
+            {
+                FormSetting formSet = new FormSetting();
+                formSet.ShowDialog();
+            }
+        }
+
+        private void btn_Lock_Click(object sender, EventArgs e)
+        {
+            FormPWD pwd = new FormPWD();
+            if (pwd.ShowDialog() == DialogResult.OK)
+            {
+                this.Invoke((EventHandler)(delegate
+                {
+                    textBox_input.Enabled = true;
+                    textBox_input.Text = "";
+                    textBox_input.Focus();
+                }));
+            }
+        }
+
+        private void textBox_Query_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                if (!string.IsNullOrEmpty(textBox_Query.Text))
+                {
+                    string strSql = String.Format("select * from records where code ='{0}'", textBox_Query.Text);
+                    DataTable dt = null;
+                    AccessHelper.ReadData(strSql, ref dt);
+                    AccessHelper.ShowTableDataGridView(dataGridView, dt);
                 }
             }
         }
