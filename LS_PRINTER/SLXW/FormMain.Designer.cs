@@ -33,14 +33,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btn_Setting = new System.Windows.Forms.Button();
+            this.btn_Lock = new System.Windows.Forms.Button();
             this.btn_clear = new System.Windows.Forms.Button();
             this.textBox_input = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.textBox_Total = new System.Windows.Forms.TextBox();
             this.label_TXT = new System.Windows.Forms.Label();
-            this.btn_Lock = new System.Windows.Forms.Button();
-            this.btn_Setting = new System.Windows.Forms.Button();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox_Query = new System.Windows.Forms.TextBox();
@@ -60,6 +60,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.btn_Setting);
             this.groupBox1.Controls.Add(this.btn_Lock);
             this.groupBox1.Controls.Add(this.btn_clear);
@@ -74,8 +76,32 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "设置";
             // 
+            // btn_Setting
+            // 
+            this.btn_Setting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_Setting.Location = new System.Drawing.Point(347, 23);
+            this.btn_Setting.Name = "btn_Setting";
+            this.btn_Setting.Size = new System.Drawing.Size(75, 58);
+            this.btn_Setting.TabIndex = 22;
+            this.btn_Setting.Text = "打印设置";
+            this.btn_Setting.UseVisualStyleBackColor = true;
+            this.btn_Setting.Click += new System.EventHandler(this.btn_Setting_Click);
+            // 
+            // btn_Lock
+            // 
+            this.btn_Lock.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_Lock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Lock.Image = global::SLXW.Properties.Resources._lock;
+            this.btn_Lock.Location = new System.Drawing.Point(283, 53);
+            this.btn_Lock.Name = "btn_Lock";
+            this.btn_Lock.Size = new System.Drawing.Size(45, 28);
+            this.btn_Lock.TabIndex = 21;
+            this.btn_Lock.UseVisualStyleBackColor = true;
+            this.btn_Lock.Click += new System.EventHandler(this.btn_Lock_Click);
+            // 
             // btn_clear
             // 
+            this.btn_clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btn_clear.Location = new System.Drawing.Point(283, 22);
             this.btn_clear.Name = "btn_clear";
             this.btn_clear.Size = new System.Drawing.Size(45, 23);
@@ -86,6 +112,8 @@
             // 
             // textBox_input
             // 
+            this.textBox_input.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox_input.Location = new System.Drawing.Point(104, 58);
             this.textBox_input.Name = "textBox_input";
             this.textBox_input.Size = new System.Drawing.Size(173, 21);
@@ -113,6 +141,8 @@
             // 
             // textBox_Total
             // 
+            this.textBox_Total.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox_Total.Enabled = false;
             this.textBox_Total.Location = new System.Drawing.Point(104, 22);
             this.textBox_Total.Name = "textBox_Total";
@@ -122,7 +152,8 @@
             // 
             // label_TXT
             // 
-            this.label_TXT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label_TXT.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label_TXT.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.label_TXT.Font = new System.Drawing.Font("宋体", 42F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_TXT.ForeColor = System.Drawing.Color.Lime;
@@ -132,27 +163,6 @@
             this.label_TXT.TabIndex = 16;
             this.label_TXT.Text = "label1";
             this.label_TXT.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // btn_Lock
-            // 
-            this.btn_Lock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Lock.Image = global::SLXW.Properties.Resources._lock;
-            this.btn_Lock.Location = new System.Drawing.Point(283, 53);
-            this.btn_Lock.Name = "btn_Lock";
-            this.btn_Lock.Size = new System.Drawing.Size(45, 28);
-            this.btn_Lock.TabIndex = 21;
-            this.btn_Lock.UseVisualStyleBackColor = true;
-            this.btn_Lock.Click += new System.EventHandler(this.btn_Lock_Click);
-            // 
-            // btn_Setting
-            // 
-            this.btn_Setting.Location = new System.Drawing.Point(347, 23);
-            this.btn_Setting.Name = "btn_Setting";
-            this.btn_Setting.Size = new System.Drawing.Size(75, 58);
-            this.btn_Setting.TabIndex = 22;
-            this.btn_Setting.Text = "打印设置";
-            this.btn_Setting.UseVisualStyleBackColor = true;
-            this.btn_Setting.Click += new System.EventHandler(this.btn_Setting_Click);
             // 
             // dataGridView
             // 
@@ -190,6 +200,8 @@
             // 
             // textBox_Query
             // 
+            this.textBox_Query.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox_Query.Location = new System.Drawing.Point(110, 104);
             this.textBox_Query.Name = "textBox_Query";
             this.textBox_Query.Size = new System.Drawing.Size(173, 21);
@@ -207,11 +219,11 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.richTextBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(854, 550);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Tag = "";
-            this.Text = "LS PRINTER TOOL V2.0(20211020)";
+            this.Text = "LS PRINTER TOOL";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.FormMain_Shown);

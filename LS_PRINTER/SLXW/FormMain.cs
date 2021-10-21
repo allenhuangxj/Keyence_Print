@@ -28,6 +28,8 @@ namespace SLXW
         private Communication_TcpServer m_Server = null;
         private Print m_Print = new Print();
         private bool m_bHandPrint = false;
+
+        private bool m_bTransfer = false;
         public FormMain()
         {
             InitializeComponent();
@@ -97,34 +99,34 @@ namespace SLXW
 
         private void PrintData(string strData)
         {
-            string strDir = Configure.ReadConfig("SET", "MODEL_GRF", "");
-            int nLoops = Configure.ReadConfig("SET", "COUNT", 1);
-            string strName1 = Configure.ReadConfig("SET", "NAME1", "SN");
-            string strName2 = Configure.ReadConfig("SET", "NAME2", "BR");
-            bool bPrint = Convert.ToBoolean(Configure.ReadConfig("SET", "MarkNow", "True"));
-            Log_RichTextBoxEx.WriteMessage("条码内容：" + strData);
-            //界面显示
-            this.Invoke((EventHandler)(delegate
-            {
-                label_TXT.Text = strData;
-            }));
-
-            if (!bPrint)
-            {
-                Log_RichTextBoxEx.WriteMessage("不执行打印流程,退出流程");
-                return;
-            }
-
-            Log_RichTextBoxEx.WriteMessage("开始执行打印流程");
-            if (string.IsNullOrEmpty(strDir) || nLoops <= 0)
-            {
-                Log_RichTextBoxEx.WriteMessage("请先设置打印机相关配置信息", true);
-                return;
-            }
-
             try
             {
-                string strPrintName = strDir + strData.Length.ToString() + ".grf";
+                string strDir = Configure.ReadConfig("SET", "MODEL_GRF", "");
+                int nLoops = Configure.ReadConfig("SET", "COUNT", 1);
+                string strName1 = Configure.ReadConfig("SET", "NAME1", "SN");
+                string strName2 = Configure.ReadConfig("SET", "NAME2", "BR");
+                bool bPrint = Convert.ToBoolean(Configure.ReadConfig("SET", "MarkNow", "True"));
+                Log_RichTextBoxEx.WriteMessage("条码内容：" + strData);
+                //界面显示
+                this.Invoke((EventHandler)(delegate
+                {
+                    label_TXT.Text = strData;
+                }));
+
+                if (!bPrint)
+                {
+                    Log_RichTextBoxEx.WriteMessage("不执行打印流程,退出流程");
+                    return;
+                }
+
+                Log_RichTextBoxEx.WriteMessage("开始执行打印流程");
+                if (string.IsNullOrEmpty(strDir) || nLoops <= 0)
+                {
+                    Log_RichTextBoxEx.WriteMessage("请先设置打印机相关配置信息", true);
+                    return;
+                }
+
+                string strPrintName = string.Format("{0}\\{1}.grf", strDir, strData.Length.ToString());
                 if (!File.Exists(strPrintName))
                 {
                     Log_RichTextBoxEx.WriteMessage("打印文件不存在:" + strPrintName, true);
@@ -197,7 +199,6 @@ namespace SLXW
                     m_bHandPrint = false;
                     textBox_input.Text = "";
                     textBox_input.Focus();
-                    textBox_input.Enabled = false;
                 }));
             }
         }
@@ -271,16 +272,27 @@ namespace SLXW
 
         private void btn_Lock_Click(object sender, EventArgs e)
         {
-            FormPWD pwd = new FormPWD();
-            if (pwd.ShowDialog() == DialogResult.OK)
+            if (!m_bTransfer)
             {
-                this.Invoke((EventHandler)(delegate
+                FormPWD pwd = new FormPWD();
+                if (pwd.ShowDialog() == DialogResult.OK)
                 {
-                    textBox_input.Enabled = true;
-                    textBox_input.Text = "";
-                    textBox_input.Focus();
-                }));
+                    this.Invoke((EventHandler)(delegate
+                    {
+                        textBox_input.Enabled = true;
+                        textBox_input.Text = "";
+                        textBox_input.Focus();
+                    }));
+
+                    m_bTransfer = !m_bTransfer;
+                }
             }
+            else
+            {
+                textBox_input.Enabled = false;
+                m_bTransfer = !m_bTransfer;
+            }
+
         }
 
         private void textBox_Query_KeyPress(object sender, KeyPressEventArgs e)

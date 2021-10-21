@@ -1,0 +1,25 @@
+﻿{
+	"Version":"6.0.2.0",
+	"Font":{
+		"Name":"宋体",
+		"Size":105000,
+		"Weight":400,
+		"Charset":134
+	},
+	"Printer":{
+	},
+	"PageHeader":{
+		"Height":2.40771,
+		"Control":[
+			{
+				"Type":"Barcode",
+				"Name":"Barcode1",
+				"Left":2.40771,
+				"Top":0.211667,
+				"Width":10.3981,
+				"Height":1.98438,
+				"Text":"12345678"
+			}
+		]
+	}
+}
