@@ -81,7 +81,7 @@ namespace SLXW
             try
             {
                 m_mutex.WaitOne();
-                string strRecive = strReciveString.Substring(0, strReciveString.Length - 1);
+                string strRecive = strReciveString;
                 Log_RichTextBoxEx.WriteMessage("截取后最终的打印数据为:" + strRecive);
                 Log_RichTextBoxEx.WriteMessage("接收条码数据触发打印");
                 PrintData(strRecive);
